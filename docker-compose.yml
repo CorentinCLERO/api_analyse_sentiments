@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sentiments_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sentiments_db}
+      MYSQL_USER: ${MYSQL_USER:-sentiments_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sentiments_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:
