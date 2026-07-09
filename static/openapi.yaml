@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: API d'Analyse de Sentiments
+  description: >
+    API permettant d'évaluer le sentiment de tweets à l'aide d'un modèle
+    de régression logistique entraîné sur des données annotées.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:5000
+
+paths:
+  /analyze:
+    post:
+      summary: Analyse le sentiment d'une liste de tweets
+      description: >
+        Retourne pour chaque tweet un score de sentiment compris entre
+        -1 (très négatif) et 1 (très positif).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tweets
+              properties:
+                tweets:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - "I absolutely love this!"
+                    - "This is the worst experience ever"
+      responses:
+        "200":
+          description: Scores de sentiment calculés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                  format: float
+              example:
+                "I absolutely love this!": 0.1688
+                "This is the worst experience ever": -0.3246
+        "400":
+          description: Requête invalide (liste vide, mauvais format, champ manquant)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "La liste de tweets ne peut pas être vide."
+
+  /health:
+    get:
+      summary: Vérifie que l'API est opérationnelle
+      responses:
+        "200":
+          description: L'API fonctionne correctement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+              example:
+                status: ok
