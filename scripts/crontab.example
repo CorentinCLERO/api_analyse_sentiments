@@ -1,0 +1,4 @@
+# Weekly retraining of the sentiment model — every Monday at 03:00.
+# Replace /ABSOLUTE/PATH/TO/api_analyse_sentiments with the real project path,
+# or run scripts/install_cron.sh which fills it in automatically.
+0 3 * * 1 /ABSOLUTE/PATH/TO/api_analyse_sentiments/scripts/retrain.sh
